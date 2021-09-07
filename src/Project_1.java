@@ -18,10 +18,8 @@ public class Project_1 {
 		int N = 0;							
 		boolean inputError;				//Declare variable for input validation.
 		
-		System.out.print("Please enter a positive integer value for which the program will"
+		System.out.print("Please enter a positive integer value for which the program will "
 				+ "find all primes up to the specified number: ");
-		
-		//Do While loop checks if user input is valid. Loops if not.
 		
 		//NOTE TO SELF. CHECK IF NUMBER IS > 1!!!!!!!!
 		do {
@@ -38,24 +36,26 @@ public class Project_1 {
 			}
 		} while(inputError);
 		
-		boolean[] boolArray = new boolean[N];	//Declare boolean array.
-		//NOTE TO SELF. Reference the actual number by index + 3 to start at 2 to N.
-		for(int i = 0; i < N; i++) {
-			boolArray[i] = true;
+		boolean[] boolArray = new boolean[N + 1];	//Declare boolean array. Offset by +1 to match array index with
+													//counting integers (i.e. 0,1,2,3... -> 1,2,3...).
+		for(int i = 2; i < boolArray.length; i++) {
+			boolArray[i] = true;					//Note - first 2 elements will always be false since we do not
+													//consider them in this algorithm.
 		}
 		
-		int sqrtN = (int) Math.pow(N,0.5);	//Create for loop max length
-		for(int i = 0; i < sqrtN; i++) {
+		
+		int sqrtN = ((int) Math.pow(N,0.5));		//Create for loop max length
+		for(int i = 2; i <= sqrtN; i++) {
 			if(boolArray[i]) {
-				for(int j = (int) Math.pow(i + 2,2), k = 1;j < N; j += (k * i+2), k++) {
+				for(int j = (int) Math.pow(i,2);j < boolArray.length; j += i) {
 					boolArray[j] = false;
 				}
 			}
 		}
 		
-		for(int i = 0; i < N; i++) {
+		for(int i = 2; i < boolArray.length; i++) {
 			if(boolArray[i])
-				System.out.printf("%d ", i + 2);
+				System.out.printf("%d ", i);
 		}
 		
 
