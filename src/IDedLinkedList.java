@@ -41,14 +41,12 @@ public class IDedLinkedList<T extends IDedObject> {
 		
 		searchNode = head;
 		
-		while(searchNode.data.getID() != x && searchNode != null) {
+		while(searchNode.data != null && searchNode.data.getID() != x) {	//Check for null first to prevent null pointer error
 			searchPreviousNode = searchNode;
 			searchNode = searchNode.next;
 		}
 		
-		if(searchNode != null)
-			return searchNode.data;
-		return null;
+		return searchNode.data;	//searchNode will return T if it exists or null if it doesn't exit. This is intended.
 		
 	}
 	
@@ -87,8 +85,10 @@ public class IDedLinkedList<T extends IDedObject> {
 		if(findID(id) == null)
 			return null;
 
-		if(searchPreviousNode == null)
-			return deleteFromFront();	//Node is at head. 
+		if(searchPreviousNode == null) {
+			size--;
+			return deleteFromFront();	//Node is at head.
+		} 
 		
 		searchPreviousNode.next = searchNode.next;
 		size--;
