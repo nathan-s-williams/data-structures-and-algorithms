@@ -3,8 +3,8 @@ public class IDedLinkedList<T extends IDedObject> {
 	
 	private Node<T> head;
 	private Node<T> tail;
-	private Node<T> searchNode;
-	private Node<T> searchPreviousNode;
+	private Node<T> current;
+	private Node<T> previous;
 	private int size;
 	
 	private static class Node<T extends IDedObject> {
@@ -36,17 +36,20 @@ public class IDedLinkedList<T extends IDedObject> {
 	}
 	
 	public T findID(int x) {
+		current = null;
+		previous = null;
+		
 		if(size == 0)
 			return null;
 		
-		searchNode = head;
+		current = head.next;
 		
-		while(searchNode.data != null && searchNode.data.getID() != x) {	//Check for null first to prevent null pointer error
-			searchPreviousNode = searchNode;
-			searchNode = searchNode.next;
+		while(current.data != null && current.data.getID() != x) {	//Check for null first to prevent null pointer error
+			previous = current;
+			current = current.next;
 		}
 		
-		return searchNode.data;	//searchNode will return T if it exists or null if it doesn't exit. This is intended.
+		return current.data;	//current will return T if it exists or null if it doesn't exit. This is intended.
 		
 	}
 	
@@ -54,14 +57,8 @@ public class IDedLinkedList<T extends IDedObject> {
 		if(findID(x.getID()) != null)
 			return false;
 		
-		if(isEmpty()) {
-			head.data = x;
-			
-		}
-		else {
-			Node<T> NewNode = new Node<T>(x, head);
-			head = NewNode;	
-		}
+		Node<T> NewNode = new Node<T>(x, head.next);
+		head.next = NewNode;
 		
 		size++;
 		return true;
@@ -71,8 +68,8 @@ public class IDedLinkedList<T extends IDedObject> {
 		if(isEmpty())
 			return null;
 		
-		Node<T> deletedNode = head;
-		head = new Node<T>(head.next.data,head.next.next);
+		Node<T> deletedNode = head.next;
+		head.next = deletedNode.next;
 		
 		size--;
 		return deletedNode.data;
@@ -85,14 +82,14 @@ public class IDedLinkedList<T extends IDedObject> {
 		if(findID(id) == null)
 			return null;
 
-		if(searchPreviousNode == null) {
+		if(previous == null) {	//Previous is null when the node is in the front.
 			size--;
-			return deleteFromFront();	//Node is at head.
+			return deleteFromFront();
 		} 
 		
-		searchPreviousNode.next = searchNode.next;
+		previous.next = current.next;
 		size--;
-		return searchNode.data;
+		return current.data;
 	}
 	
 	public int printTotal() {
