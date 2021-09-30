@@ -1,8 +1,19 @@
+/*******************************************************************************
+ * Project 2: 
+ * Implement in Java a singly linked list of a specific generic type. Project
+ * consists of one interface and three user defined classes that implement a
+ * list so as to take input from a file and output another based on certain 
+ * linked list operations.
+ *
+ * Created on 9/25/21 By Nathan Williams (nsw200000)
+ * Course: 3345.005 Data Structures and Introduction to Algorithmic Analysis
+ * @author nate
+********************************************************************************/
 
 public class IDedLinkedList<T extends IDedObject> {
 	
-	private Node<T> head;
-	private Node<T> tail;
+	private Node<T> head;	//sentinel starting node
+	private Node<T> tail;	//sentinel ending node
 	private Node<T> current;
 	private Node<T> previous;
 	private int size;
@@ -44,7 +55,7 @@ public class IDedLinkedList<T extends IDedObject> {
 		
 		current = head.next;
 		
-		while(current.data != null && current.data.getID() != x) {	//Check for null first to prevent null pointer error
+		while(current != tail && current.data.getID() != x) {
 			previous = current;
 			current = current.next;
 		}
@@ -95,6 +106,15 @@ public class IDedLinkedList<T extends IDedObject> {
 	public int printTotal() {
 		if(isEmpty())
 			return -1;
-		return size;
+		
+		int sum = 0;
+		current = null;
+		current = head.next;
+		while(current.data != null) {
+			sum += current.data.getID();
+			current = current.next;
+		}
+		
+		return sum;
 	}
 }
