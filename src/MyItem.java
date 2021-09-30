@@ -1,4 +1,4 @@
-import java.util.List;
+import java.util.*;
 
 public class MyItem implements IDedObject{
 
@@ -21,7 +21,7 @@ public class MyItem implements IDedObject{
 	}
 	
 	public void setItemDescription(List<Integer> arr) {
-		itemDescription = arr;
+		itemDescription = new LinkedList<Integer>(arr);
 	}
 	
 	public void addItemDescription(Integer num) {
@@ -67,7 +67,7 @@ public class MyItem implements IDedObject{
 	}
 
 	public String printID() {
-		return "ID: " + getID() + " | Price: " + getPrice() + " | Item Description: " + printItemDescription();
+		return getID() + " " + getPrice() + " " + printItemDescription();
 		
 	}
 
