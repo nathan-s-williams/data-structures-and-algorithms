@@ -137,24 +137,24 @@ public class LazyBinarySearchTree {
 	 * @return boolean
 	 */
 	public boolean insert(int key) {
-		int countBefore = root.count;		//Set current node count before insert.
+		int countBefore = root.count;				//Set current node count before insert.
 		root = insertKey(key, root);
-		return root.count > countBefore;	//Return true if physically inserted node into tree.
+		return root.count > countBefore;			//Return true if physically inserted node into tree.
 		
 	}
 	
 	private TreeNode insertKey(int k, TreeNode n) {
-		if(n == null)						//Found insert location. Return new TreeNode with key = k.
+		if(n == null)								//Found insert location. Return new TreeNode with key = k.
 			return new TreeNode(k);
 		
 		int compareInt = n.compareNode(k);
 		
-		if(compareInt > 0)					//Traverse tree based on comparison value.
+		if(compareInt > 0)							//Traverse tree based on comparison value.
 			n.leftChild = insertKey(k, n.leftChild);
 		else if(compareInt < 0)
 			n.rightChild = insertKey(k,n.rightChild);
 		else
-			if(n.deleted)					//
+			if(n.deleted)							//If node was deleted, undo deletion to make it active again.
 				n.treeNodeUndelete();
 		
 		return n;
@@ -169,27 +169,72 @@ public class LazyBinarySearchTree {
 	 * 
 	 * If key is already deleted, then method should do nothing.
 	 * 
-	 * Method returns a boolean indicating success or failure. 
+	 * Method returns a boolean indicating: true - a node was deleted by moving the node's
+	 * deleted flag from false to true, false - a node's flag was already marked as deleted.
 	 * @param key - integer input stored in BST.
 	 * @return boolean
 	 */
 	public boolean delete(int key) {
+		int countBefore = root.deletedCount;
+		root = deleteKey(key, root);
+		return root.deletedCount > countBefore;
+	}
+	
+	private TreeNode deleteKey(int k, TreeNode n) {
+		if(n == null)
+			return n;
 		
-		return false; //placeholder
+		int compareInt = n.compareNode(k);
+		
+		if(compareInt > 0)							
+			n.leftChild = deleteKey(k, n.leftChild);
+		else if(compareInt < 0)
+			n.rightChild = deleteKey(k,n.rightChild);
+		else
+			if(!n.deleted)
+				n.treeNodeDelete();
+		
+		return n;
 	}
 	
 	/**
 	 * Returns the value of the minimum non-deleted element, or -1 if none exists.
 	 */
-	public void findMin() {
+	public int findMin() {
+		if(isEmpty())
+			return -1;
+		
+		int minReturned = findMinKey(root.key, root);
+		if(minReturned == root.key && root.deleted) {
+			TreeNode n = root;
+			while(n.deleted) {
+				n = n.rightChild;
+			}
+			
+			minReturned = n.key;
+		}
+		
+		return minReturned;
+	}
+	
+	private int findMinKey(int minKey, TreeNode n) {
+		if(n == null)
+			return minKey;
+		
+		if(n.compareNode(minKey) < 0 && !n.deleted)
+			minKey = n.key;
+				
+		return findMinKey(minKey, n.leftChild);
 		
 	}
 	
 	/**
 	 * Returns the value of the minimum non-deleted element, or -1 if none exists.
 	 */
-	public void findMax() {
+	public int findMax() {
 		
+		
+		return 0;	//placeholder
 	}
 	
 	/**
@@ -227,7 +272,6 @@ public class LazyBinarySearchTree {
 	 * @return
 	 */
 	public int size() {
-		
-		return 0; //placeholder
+		return root.count;
 	}
 }
