@@ -118,8 +118,14 @@ public class LazyBinarySearchTree {
 		}
 	}
 	
-	LazyBinarySearchTree(){		//constructor - set root to null.
+	LazyBinarySearchTree(){		//bst constructor - set root to null.
 		root = null;
+	}
+	
+	private void validateInput(int key){
+		if(key < 1 || key > 99) 
+			throw new IllegalArgumentException();
+		
 	}
 	
 	public boolean isEmpty() {	//Empty if root is null or the number deleted = number inserted.
@@ -140,7 +146,8 @@ public class LazyBinarySearchTree {
 	 * @param key - integer input stored in BST.
 	 * @return boolean
 	 */
-	public boolean insert(int key) {
+	public boolean insert(int key) throws IllegalArgumentException {
+		validateInput(key);
 		int countBefore = root.count;				//Set current node count before insert.
 		root = insertKey(key, root);
 		return root.count > countBefore;			//Return true if physically inserted node into tree.
@@ -178,7 +185,8 @@ public class LazyBinarySearchTree {
 	 * @param key - integer input stored in BST.
 	 * @return boolean
 	 */
-	public boolean delete(int key) {
+	public boolean delete(int key) throws IllegalArgumentException {
+		validateInput(key);
 		int countBefore = root.deletedCount;
 		root = deleteKey(key, root);
 		return root.deletedCount > countBefore;
@@ -295,8 +303,23 @@ public class LazyBinarySearchTree {
 	 * @return String
 	 */
 	public String toString() {
+		String str = "";
+		return preorderPrint(str, root);
+	}
+	
+	private String preorderPrint(String str, TreeNode n) {
+		if(n == null)
+			return str;
 		
-		return ""; //placeholder
+		if(n.deleted)
+			str += "*" + n.key + " ";
+		else
+			str += "" + n.key + " ";
+		
+		str = preorderPrint(str, n.leftChild);
+		str = preorderPrint(str, n.rightChild);
+		
+		return str;
 	}
 	
 	/**
@@ -304,8 +327,22 @@ public class LazyBinarySearchTree {
 	 * @return int
 	 */
 	public int height() {
+		return nodeHeight(root) - 1; //Subtract 1 since edges = node - 1.
+	}
+	
+	private int nodeHeight(TreeNode n) {
+		if(n == null)
+			return 0;
 		
-		return 0; //placeholder
+		int right = nodeHeight(n.rightChild) + 1;
+		int left = nodeHeight(n.leftChild) + 1;
+		
+		if(right == left)
+			return right;
+		if(right > left)
+			return right;
+		else return left;
+		 
 	}
 	
 	/**
