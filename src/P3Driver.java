@@ -37,7 +37,7 @@ public class P3Driver {
 		try {
 			File input_file = new File(args[0]);
 			in = new Scanner(input_file);
-			in.useDelimiter(":");	//Change delimiter to ":".
+			in.useDelimiter("[:\n\r]");	//Change delimiter to ":".
 			File output_file = new File(args[1]);
 			PrintWriter out;
 			out = new PrintWriter(output_file);
@@ -45,31 +45,32 @@ public class P3Driver {
 			LazyBinarySearchTree bst = new LazyBinarySearchTree();
 
 			String operation = "";
-			int lineno = 0;
 
 			int key;
 			boolean result;
-			String str;
 			
 			whileloop: while (in.hasNext()) {
-				lineno++;
-
+//				in.next();
 				operation = in.next();
+//				String nextint = in.next();
 //				if (operation.charAt(0) == '#') { 	//DELETE
 //					in.nextLine();
 //					continue;
 //				}
 				switch (operation) {
-//				case "End":							//DELETE
-//					break whileloop;
+				case "":							//DELETE
+					break;
 				case "Insert":
 					try {
 						key = in.nextInt();
+//						out.println(in.next());
 						result = bst.insert(key);
 						// result = Insert the item into BST and get true or false
 						out.println(result ? "True" : "False");
 					} catch (IllegalArgumentException e) {
 						out.println("Error in insert: IllegalArgumentException raised");
+					} catch (InputMismatchException mm) {
+						out.println("Error in line " + operation); //+ in.nextLine());
 					}
 
 					break;
@@ -99,16 +100,25 @@ public class P3Driver {
 					out.println(bst.toString());
 					break;
 					
-				case "PrintTotal":
-					// Call the printtotal method of the linkedlist and print the given int into the
-					// output file.
-					int total = LL.printTotal();
-					out.println(total);
+				case "FindMin":
+					out.println(bst.findMin());
 					break;
 
+				case "FindMax":
+					out.println(bst.findMax());
+					break;
+					
+				case "Height":
+					out.println(bst.height());
+					break;
+					
+				case "Size":
+					out.println(bst.size());
+					break;
+					
 				default:
-					out.println("ERROR");
-					in.nextLine();
+					out.println("Error in Line: " + operation);
+//					in.nextLine();
 
 				}
 
