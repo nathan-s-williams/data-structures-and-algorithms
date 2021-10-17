@@ -248,7 +248,7 @@ public class LazyBinarySearchTree {
 		if(isEmpty())	//Return -1 if tree is empty.
 			return -1;
 		
-		int maxReturned = findMaxKey(root.key, root);
+		int maxReturned = findMaxKey(root.key, root.rightChild);
 		if(maxReturned == root.key && root.deleted) {	//If root is the max node and it was deleted
 			TreeNode n = root;							//traverse left side until the first non-deleted
 			while(n.deleted) {							//key is reached.
@@ -267,8 +267,25 @@ public class LazyBinarySearchTree {
 		
 		if(n.compareNode(maxKey) > 0 && !n.deleted)
 			maxKey = n.key;
+		
+		int left = findMaxKey(maxKey, n.leftChild);
+		int right = findMaxKey(maxKey, n.rightChild);
+		
+		if(left > right)
+			return left;
+		else if(left < right)
+			return right;
+		else return right;
 				
-		return findMaxKey(maxKey, n.rightChild);
+		
+		
+//		if(n != null)
+//			while(n.rightChild != null) {
+//				if(!n.rightChild.deleted)
+//					maxKey = n.rightChild.key;
+//				n = n.rightChild;
+//			}
+//		return maxKey;
 	}
 	
 	/**
@@ -339,11 +356,11 @@ public class LazyBinarySearchTree {
 		int right = nodeHeight(n.rightChild) + 1;
 		int left = nodeHeight(n.leftChild) + 1;
 		
-		if(right == left)
-			return right;
 		if(right > left)
 			return right;
-		else return left;
+		else if(right < left)
+			return left;
+		else return right;
 		 
 	}
 	
