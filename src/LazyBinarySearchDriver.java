@@ -30,21 +30,39 @@ public class LazyBinarySearchDriver {
 //		bst.insert(73);
 		
 		//height example 2
-		bst.insert(80);
-		bst.insert(79);
-		bst.insert(85);
-		bst.insert(77);
-		bst.insert(83);
-		bst.insert(86);
-		bst.insert(78);
-		bst.insert(82);
-		bst.insert(84);
-		bst.insert(87);
-		bst.insert(81);
-		bst.insert(88);
-		bst.insert(89);
+		System.out.println(bst.isEmpty());
+		System.out.println(bst.insert(80));
+		System.out.println(bst.insert(79));
+		System.out.println(bst.insert(85));
+		System.out.println(bst.insert(75));
+		System.out.println(bst.insert(83));
+		System.out.println(bst.insert(86));
+		System.out.println(bst.insert(78));
+		System.out.println(bst.insert(82));
+		System.out.println(bst.insert(84));
+		System.out.println(bst.insert(87));
+		System.out.println(bst.insert(81));
+		System.out.println(bst.insert(88));
+		System.out.println(bst.insert(67));
+		System.out.println(bst.insert(67));
 		
+		
+		System.out.println();
+		System.out.println(bst.delete(45));
+		System.out.println(bst.delete(75));
+		System.out.println(bst.delete(67));
+		System.out.println(bst.delete(81));
+		System.out.println(bst.insert(81));
+		
+		System.out.println();
+		System.out.println(bst.isEmpty());
 		System.out.println(bst.height());
+		System.out.println(bst.contains(80));
+		System.out.println(bst.findMax());
+		System.out.println(bst.findMin());
+		System.out.println(bst.size());
+		System.out.println(bst.toString());
+		
 		
 //		System.out.println(bst.insert(55));
 //		System.out.println(bst.delete(55));
