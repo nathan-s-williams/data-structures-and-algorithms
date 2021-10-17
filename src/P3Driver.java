@@ -37,10 +37,11 @@ public class P3Driver {
 		try {
 			File input_file = new File(args[0]);
 			in = new Scanner(input_file);
+			in.useDelimiter(":");	//Change delimiter to ":".
 			File output_file = new File(args[1]);
 			PrintWriter out;
 			out = new PrintWriter(output_file);
-
+			
 			LazyBinarySearchTree bst = new LazyBinarySearchTree();
 
 			String operation = "";
@@ -49,81 +50,55 @@ public class P3Driver {
 			int key;
 			boolean result;
 			String str;
-
+			
 			whileloop: while (in.hasNext()) {
 				lineno++;
 
 				operation = in.next();
-//				if (operation.charAt(0) == '#') { //DELETE
+//				if (operation.charAt(0) == '#') { 	//DELETE
 //					in.nextLine();
 //					continue;
 //				}
 				switch (operation) {
-				case "End":
-					break whileloop;
+//				case "End":							//DELETE
+//					break whileloop;
 				case "Insert":
 					try {
-
-						id = in.nextInt();
-						price = in.nextInt();
-						name.clear();
-						while (true) {
-							int val = in.nextInt();
-							if (val == 0) {
-								break;
-							} else {
-								name.add(val);
-							}
-						}
-						MyItem new_item = new MyItem(id, price, name);
-						result = LL.insertAtFront(new_item);
-						// result = Insert the item into the linkedlist and get true or false
+						key = in.nextInt();
+						result = bst.insert(key);
+						// result = Insert the item into BST and get true or false
 						out.println(result ? "True" : "False");
-					} catch (Exception e) {
-						out.println("ERROR");
+					} catch (IllegalArgumentException e) {
+						out.println("Error in insert: IllegalArgumentException raised");
 					}
 
 					break;
-				case "FindID":
+					
+				case "Contains":
 					try {
-						id = in.nextInt();
-						MyItem item1 = LL.findID(id);
-						// Call the FindID method and printID method to print to the output file the
-						// entire item in a line. If the item is not found or the list is empty print
-						// Null
-						out.println(item1 != null ? item1.printID() : "Null");
-					} catch (Exception e) {
-						out.println("ERROR");
+						key = in.nextInt();
+						result = bst.contains(key);
+						out.println(result ? "True" : "False");
+					} catch (IllegalArgumentException e) {
+						out.println("Error in insert: IllegalArgumentException raised");
 					}
 					break;
-				case "DeleteID":
-					try {
-						id = in.nextInt();
-
-						// Call the DeleteID method and printID method to print to the output file the
-						// entire item in a line. If the item is not found or the list is empty print
-						// Null
-						MyItem item1 = LL.delete(id);
-						// Call the FindID method and printID method to print to the output file the
-						// entire item in a line. If the item is not found or the list is empty print
-						// Null
-						out.println(item1 != null ? item1.printID() : "Null");
-					} catch (Exception e) {
-						out.println("ERROR");
-					}
-
-					break;
+					
 				case "Delete":
-					// If the list is not empty print and delete the first item in the list. if the
-					// list is empty print Null
+					try {
+						key = in.nextInt();
+						result = bst.delete(key);
 
-					MyItem item1 = LL.deleteFromFront();
-					// Call the FindID method and printID method to print to the output file the
-					// entire item in a line. If the item is not found or the list is empty print
-					// Null
-					out.println(item1 != null ? item1.printID() : "Null");
+						out.println(result ? "True" : "False");
+					} catch (IllegalArgumentException e) {
+						out.println("Error in insert: IllegalArgumentException raised");
+					}
 					break;
-
+					
+				case "PrintTree":
+					out.println(bst.toString());
+					break;
+					
 				case "PrintTotal":
 					// Call the printtotal method of the linkedlist and print the given int into the
 					// output file.
