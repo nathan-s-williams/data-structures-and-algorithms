@@ -275,7 +275,8 @@ public class LazyBinarySearchTree {
 	 * @param key - integer input stored in BST.
 	 * @return boolean
 	 */
-	public boolean contains(int key) {
+	public boolean contains(int key) throws IllegalArgumentException{
+		validateInput(key);
 		return containsNode(key,root);
 	}
 	
