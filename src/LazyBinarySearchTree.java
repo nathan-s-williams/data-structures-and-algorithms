@@ -118,7 +118,11 @@ public class LazyBinarySearchTree {
 		}
 	}
 	
-	public boolean isEmpty() {
+	LazyBinarySearchTree(){		//constructor - set root to null.
+		root = null;
+	}
+	
+	public boolean isEmpty() {	//Empty if root is null or the number deleted = number inserted.
 		if(root == null || root.count == root.deletedCount)
 			return true;
 		return false;
@@ -201,13 +205,13 @@ public class LazyBinarySearchTree {
 	 * Returns the value of the minimum non-deleted element, or -1 if none exists.
 	 */
 	public int findMin() {
-		if(isEmpty())
+		if(isEmpty())	//Return -1 if tree is empty.
 			return -1;
 		
 		int minReturned = findMinKey(root.key, root);
-		if(minReturned == root.key && root.deleted) {
-			TreeNode n = root;
-			while(n.deleted) {
+		if(minReturned == root.key && root.deleted) {	//If root is the min node and it was deleted
+			TreeNode n = root;							//traverse right side until the first non-deleted
+			while(n.deleted) {							//key is reached.
 				n = n.rightChild;
 			}
 			
@@ -232,9 +236,30 @@ public class LazyBinarySearchTree {
 	 * Returns the value of the minimum non-deleted element, or -1 if none exists.
 	 */
 	public int findMax() {
+		if(isEmpty())	//Return -1 if tree is empty.
+			return -1;
 		
+		int maxReturned = findMaxKey(root.key, root);
+		if(maxReturned == root.key && root.deleted) {	//If root is the max node and it was deleted
+			TreeNode n = root;							//traverse left side until the first non-deleted
+			while(n.deleted) {							//key is reached.
+				n = n.leftChild;
+			}
+			
+			maxReturned = n.key;
+		}
 		
-		return 0;	//placeholder
+		return maxReturned;
+	}
+	
+	private int findMaxKey(int maxKey, TreeNode n) {
+		if(n == null)
+			return maxKey;
+		
+		if(n.compareNode(maxKey) > 0 && !n.deleted)
+			maxKey = n.key;
+				
+		return findMaxKey(maxKey, n.rightChild);
 	}
 	
 	/**
@@ -243,8 +268,24 @@ public class LazyBinarySearchTree {
 	 * @return boolean
 	 */
 	public boolean contains(int key) {
+		return containsNode(key,root);
+	}
+	
+	private boolean containsNode(int k, TreeNode n) {
+		if(n == null)								
+			return false;
 		
-		return false; //placeholder
+		int compareInt = n.compareNode(k);
+		
+		if(compareInt > 0)							//Traverse tree based on comparison value.
+			return containsNode(k, n.leftChild);
+		else if(compareInt < 0)
+			return containsNode(k,n.rightChild);
+		else
+			if(!n.deleted)							//If node is not deleted, return true.
+				return true;
+			else
+				return false;
 	}
 	
 	/**
