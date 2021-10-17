@@ -149,8 +149,9 @@ public class LazyBinarySearchTree {
 	public boolean insert(int key) throws IllegalArgumentException {
 		validateInput(key);
 		int countBefore = root.count;				//Set current node count before insert.
+		int deletedBefore = root.deletedCount;
 		root = insertKey(key, root);
-		return root.count > countBefore;			//Return true if physically inserted node into tree.
+		return root.count > countBefore || root.deletedCount < deletedBefore;//Return true if physically inserted node into tree.
 		
 	}
 	
