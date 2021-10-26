@@ -21,14 +21,17 @@ public class HashTableLinearProbe<K, V> {
 		this(DEFAULT_TABLE_SIZE);
 	}
 	
-	@SuppressWarnings("unchecked")
 	HashTableLinearProbe(int num){
+		createTable(num);
+	}
+	
+	@SuppressWarnings("unchecked")
+	private void createTable(int num) {
 		hashtable = new HashEntry[nextPrime(num)];
 		makeEmpty();
 	}
 	
-	
-	public void makeEmpty() {
+	private void makeEmpty() {
 		for(int i = 0; i < hashtable.length; i++) {
 			hashtable[i] = null;//new HashTableLinearProbe.HashEntry<K, V>(null,null); //should i use this over just hashentry?
 		}
@@ -65,33 +68,70 @@ public class HashTableLinearProbe<K, V> {
 		return myHashCode;	//placeholder
 	}
 	
+	//Must only be used with insert since method does not assume a full array.
+	//Insert increases array when needed.
 	private int findPosition(K key) {	//Return -1 if key is null
-		int hashCode = hashFunction(key);
+		int myHashCode = hashFunction(key);
 		
-		if(hashCode == -1)
+		if(myHashCode == -1)
 			return -1;
 		
-		if(hashtable[hashCode] == null) {
-			 return hashCode;
+		if(hashtable[myHashCode] == null) {
+			 return myHashCode;
 		}
 		else {
 			do {
-				if(++hashCode >= hashtable.length) {
-					hashCode -= hashtable.length;
-				}
-			}while(hashtable[hashCode] != null);
+				if(++myHashCode >= hashtable.length)
+					myHashCode -= hashtable.length;
+			}while(hashtable[myHashCode] != null);
 			
-			return hashCode;
+			return myHashCode;
 		}
 	}
 	
-	private void rehash() {
-		
+	public int getHashValue(K key) {
+		return 0; //placeholder
 	}
 	
 	public V find(K key) {
+		int myHashCode = hashFunction(key);
+		if(myHashCode == -1)
+			return null;
+		for(int i = 0; i < hashtable.length; i++) {
+			if(hashtable[myHashCode].key.equals(key)) {
+				return hashtable[myHashCode].value;
+			}
+			else if(++myHashCode >= hashtable.length) {
+				myHashCode -= hashtable.length;
+			}
+		}
+		return null;
+	}
+	
+	public HashEntry<K,V> findHashEntry(K key) {
+		int myHashCode = hashFunction(key);
+		if(myHashCode == -1)
+			return null;
+		for(int i = 0; i < hashtable.length; i++) {
+			if(hashtable[myHashCode].key.equals(key)) {
+				return hashtable[myHashCode];
+			}
+			else if(++myHashCode >= hashtable.length) {
+				myHashCode -= hashtable.length;
+			}
+		}
+		return null;
+	}
+	
+	private void rehash() {
+		HashEntry<K,V> hashtabledup[];
+		hashtabledup = hashtable;
 		
-		return null; //placeholder
+		createTable(size * 2);
+		for(int i = 0; i < hashtabledup.length; i++) {
+			if(!hashtabledup[i].deleted)
+				insert(hashtabledup[i].key,hashtabledup[i].value);
+		}
 	}
 	
 	public boolean insert(K key, V value) {
@@ -112,14 +152,14 @@ public class HashTableLinearProbe<K, V> {
 		if(size == hashtable.length)
 			rehash();
 		
-		//Check if array is big enough to rehash
-			//Check should be after insert. Do not need to do before insert since check
-			//we are always checking after each insert.
 		return true;
 	}
 	
 	public boolean delete(K key) {
-		
-		return false; //placeholder
+		HashEntry<K,V> deleteItem = findHashEntry(key);
+		if(find(key) == null || deleteItem.deleted == true)
+			return false;
+		deleteItem.deleted = true;
+		return true;
 	}
 }
