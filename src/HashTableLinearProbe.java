@@ -1,7 +1,9 @@
 
 public class HashTableLinearProbe<K, V> {
-	private static final int DEFAULT_TABLE_SIZE = 3;
+	private static final int DEFAULT_TABLE_SIZE = 3; //Default table size
 	int size;	//Number of elements in table.
+	HashEntry<K,V> hashtable[];
+	
 	
 	private static class HashEntry<K,V>{
 		K key;
@@ -15,12 +17,8 @@ public class HashTableLinearProbe<K, V> {
 		}
 	}
 	
-	HashEntry<K,V> hashtable[];
-	
-	@SuppressWarnings("unchecked")
 	HashTableLinearProbe(){
-		hashtable = new HashEntry[DEFAULT_TABLE_SIZE];
-		makeEmpty();
+		this(DEFAULT_TABLE_SIZE);
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -30,9 +28,9 @@ public class HashTableLinearProbe<K, V> {
 	}
 	
 	
-	private void makeEmpty() {
+	public void makeEmpty() {
 		for(int i = 0; i < hashtable.length; i++) {
-			hashtable[i] = new HashTableLinearProbe.HashEntry<K, V>(null,null); //should i use this over just hashentry?
+			hashtable[i] = null;//new HashTableLinearProbe.HashEntry<K, V>(null,null); //should i use this over just hashentry?
 		}
 	}
 	
@@ -54,7 +52,9 @@ public class HashTableLinearProbe<K, V> {
 		return true;
 	}
 	
-	private int hashFunction(K key) {
+	private int hashFunction(K key) {	//Return -1 if key is null
+		if(key == null)
+			return -1;
 		
 		int myHashCode = key.hashCode();
 		
@@ -65,12 +65,61 @@ public class HashTableLinearProbe<K, V> {
 		return myHashCode;	//placeholder
 	}
 	
-	private int findPosition(K key) {
-		return 0; //placeholder
+	private int findPosition(K key) {	//Return -1 if key is null
+		int hashCode = hashFunction(key);
+		
+		if(hashCode == -1)
+			return -1;
+		
+		if(hashtable[hashCode] == null) {
+			 return hashCode;
+		}
+		else {
+			do {
+				if(++hashCode >= hashtable.length) {
+					hashCode -= hashtable.length;
+				}
+			}while(hashtable[hashCode] != null);
+			
+			return hashCode;
+		}
+	}
+	
+	private void rehash() {
+		
+	}
+	
+	public V find(K key) {
+		
+		return null; //placeholder
 	}
 	
 	public boolean insert(K key, V value) {
+		//Check if insert is a duplicate
+		if(find(key) != null) 
+			return false;
+		//use findPosition to find open spot to insert
+		try {
+			hashtable[findPosition(key)] = new HashEntry<K, V>(key, value);
+		} catch(ArrayIndexOutOfBoundsException e) {	//Null key will return -1 which throws out of bounds exception.
+			e.toString();
+			System.out.println("ErrorDetails: key cannot be null.");
+		}
 		
-		return false;	//placeholder
+		//Increment array size
+		size++;
+		
+		if(size == hashtable.length)
+			rehash();
+		
+		//Check if array is big enough to rehash
+			//Check should be after insert. Do not need to do before insert since check
+			//we are always checking after each insert.
+		return true;
+	}
+	
+	public boolean delete(K key) {
+		
+		return false; //placeholder
 	}
 }
