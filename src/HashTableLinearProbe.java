@@ -65,7 +65,7 @@ public class HashTableLinearProbe<K, V> {
 		if(myHashCode < 0)
 			myHashCode += hashtable.length;
 		
-		return myHashCode;	//placeholder
+		return myHashCode;
 	}
 	
 	//Must only be used with insert since method does not assume a full array.
@@ -89,8 +89,40 @@ public class HashTableLinearProbe<K, V> {
 		}
 	}
 	
+	//This should be a combination of hashFunction and findPosition.
+	//Utilize isinstanceof to see if int or 
 	public int getHashValue(K key) {
-		return 0; //placeholder
+		int myHashCode = 0;
+		if(key instanceof Integer) {
+			myHashCode = (int)key % hashtable.length;
+		}
+		else if(key instanceof String) {
+			String keystr = (String)key;
+			for(int i = 0; i < keystr.length(); i++) {
+				myHashCode = 37 * myHashCode + keystr.charAt(i);
+			}
+			
+			myHashCode %= hashtable.length;
+		}
+		else {
+			return -1;
+		}
+		
+		if(myHashCode < 0)
+			myHashCode += hashtable.length;
+		
+		if(hashtable[myHashCode] == null) {
+			 return myHashCode;
+		}
+		else {
+			do {
+				if(++myHashCode >= hashtable.length)
+					myHashCode -= hashtable.length;
+			}while(hashtable[myHashCode] != null);
+			
+			return myHashCode;
+		}
+		
 	}
 	
 	public V find(K key) {
