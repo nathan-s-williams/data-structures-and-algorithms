@@ -3,6 +3,7 @@ public class HashTableLinearProbe<K, V> {
 	private static final int DEFAULT_TABLE_SIZE = 3; //Default table size
 	int size;	//Number of elements in table.
 	HashEntry<K,V> hashtable[];
+	HashEntry<K,V> tablePointer;
 	
 	
 	private static class HashEntry<K,V>{
@@ -55,45 +56,12 @@ public class HashTableLinearProbe<K, V> {
 		return true;
 	}
 	
-	private int hashFunction(K key) {	//Return -1 if key is null
-		if(key == null)
-			return -1;
-		
-		int myHashCode = key.hashCode();
-		
-		myHashCode %= hashtable.length;
-		if(myHashCode < 0)
-			myHashCode += hashtable.length;
-		
-		return myHashCode;
-	}
-	
-	//Must only be used with insert since method does not assume a full array.
-	//Insert increases array when needed.
-	private int findPosition(K key) {	//Return -1 if key is null
-		int myHashCode = hashFunction(key);
-		
-		if(myHashCode == -1)
-			return -1;
-		
-		if(hashtable[myHashCode] == null) {
-			 return myHashCode;
-		}
-		else {
-			do {
-				if(++myHashCode >= hashtable.length)
-					myHashCode -= hashtable.length;
-			}while(hashtable[myHashCode] != null);
-			
-			return myHashCode;
-		}
-	}
-	
-	//This should be a combination of hashFunction and findPosition.
-	//Utilize isinstanceof to see if int or 
 	public int getHashValue(K key) {
 		int myHashCode = 0;
-		if(key instanceof Integer) {
+		if(key == null || size == hashtable.length) {
+			return -1;
+		}
+		else if(key instanceof Integer) {
 			myHashCode = (int)key % hashtable.length;
 		}
 		else if(key instanceof String) {
@@ -126,27 +94,17 @@ public class HashTableLinearProbe<K, V> {
 	}
 	
 	public V find(K key) {
-		int myHashCode = hashFunction(key);
+		tablePointer = null;
+		int myHashCode = getHashValue(key);
 		if(myHashCode == -1)
 			return null;
 		for(int i = 0; i < hashtable.length; i++) {
 			if(hashtable[myHashCode].key.equals(key)) {
-				return hashtable[myHashCode].value;
-			}
-			else if(++myHashCode >= hashtable.length) {
-				myHashCode -= hashtable.length;
-			}
-		}
-		return null;
-	}
-	
-	public HashEntry<K,V> findHashEntry(K key) {
-		int myHashCode = hashFunction(key);
-		if(myHashCode == -1)
-			return null;
-		for(int i = 0; i < hashtable.length; i++) {
-			if(hashtable[myHashCode].key.equals(key)) {
-				return hashtable[myHashCode];
+				tablePointer = hashtable[myHashCode];
+				if(!hashtable[myHashCode].deleted)
+					return hashtable[myHashCode].value;
+				else
+					return null;
 			}
 			else if(++myHashCode >= hashtable.length) {
 				myHashCode -= hashtable.length;
@@ -170,28 +128,38 @@ public class HashTableLinearProbe<K, V> {
 		//Check if insert is a duplicate
 		if(find(key) != null) 
 			return false;
-		//use findPosition to find open spot to insert
-		try {
-			hashtable[findPosition(key)] = new HashEntry<K, V>(key, value);
-		} catch(ArrayIndexOutOfBoundsException e) {	//Null key will return -1 which throws out of bounds exception.
-			e.toString();
-			System.out.println("ErrorDetails: key cannot be null.");
+		
+		if(tablePointer != null && tablePointer.deleted) {
+			tablePointer.deleted = false;
 		}
-		
-		//Increment array size
-		size++;
-		
-		if(size == hashtable.length)
-			rehash();
+		else {
+			try {
+				hashtable[getHashValue(key)] = new HashEntry<K, V>(key, value);
+			} catch(ArrayIndexOutOfBoundsException e) {	//Null key will return -1 which throws out of bounds exception.
+				e.toString();
+				//UPDATE TO ACCOUNT FOR ALL ERRORS!!!
+				System.out.println("ErrorDetails: key cannot be null.");
+			}
+			
+			size++;	//Increment array size
+			
+			if(size == hashtable.length)
+				rehash();
+			
+		}
 		
 		return true;
 	}
 	
 	public boolean delete(K key) {
-		HashEntry<K,V> deleteItem = findHashEntry(key);
-		if(find(key) == null || deleteItem.deleted == true)
+		if(find(key) == null || tablePointer.deleted) {
 			return false;
-		deleteItem.deleted = true;
-		return true;
+		}
+		else {
+			return tablePointer.deleted = true;
+			
+		}
+		
 	}
+	
 }
