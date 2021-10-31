@@ -5,6 +5,18 @@ public class P4Driver {
 	public static void main(String[] args) {
 		Scanner console = new Scanner(System.in);
 		int choice;
+		
+		HashTableLinearProbe<Integer, String> LP = new HashTableLinearProbe<>();
+		
+		System.out.println(LP.insert(15, "Hello"));
+		System.out.println(LP.insert(200, "Hello"));
+		System.out.println(LP.insert(15, "Hello"));
+		System.out.println(LP.insert(15, "Whatsup"));
+		System.out.println(LP.delete(15));
+		System.out.println(LP.insert(19, "Yo"));
+		System.out.println(LP.insert(18, "Whatsup"));
+		
+/*
 
 loop:	do {
 			try {
@@ -24,9 +36,6 @@ loop:	do {
 					//getHashValue
 					break;
 				case(5):
-					//rehash
-					break;
-				case(6):
 					//Quit
 					System.out.println("Program Ended.");
 					break loop;
@@ -42,7 +51,7 @@ loop:	do {
 			}
 			
 		}while(true);
-		
+*/	
 		console.close();
 
 	}
