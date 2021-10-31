@@ -1,7 +1,7 @@
 
 public class HashTableLinearProbe<K, V> {
 	private static final int DEFAULT_TABLE_SIZE = 3; //Default table size
-	int size;	//Number of elements in table.
+	int size = 0;	//Number of elements in table.
 	HashEntry<K,V> hashtable[];
 	HashEntry<K,V> tablePointer;
 	
@@ -33,6 +33,7 @@ public class HashTableLinearProbe<K, V> {
 	}
 	
 	private void makeEmpty() {
+		size = 0;
 		for(int i = 0; i < hashtable.length; i++) {
 			hashtable[i] = null;//new HashTableLinearProbe.HashEntry<K, V>(null,null); //should i use this over just hashentry?
 		}
@@ -56,9 +57,9 @@ public class HashTableLinearProbe<K, V> {
 		return true;
 	}
 	
-	public int getHashValue(K key) {
+	private int getRawHashValue(K key) {
 		int myHashCode = 0;
-		if(key == null || size == hashtable.length) {
+		if(key == null) {
 			return -1;
 		}
 		else if(key instanceof Integer) {
@@ -79,6 +80,14 @@ public class HashTableLinearProbe<K, V> {
 		if(myHashCode < 0)
 			myHashCode += hashtable.length;
 		
+		return myHashCode;
+	}
+	
+	public int getHashValue(K key) {
+		int myHashCode = getRawHashValue(key);
+		if(myHashCode == -1)
+			return -1;
+		
 		if(hashtable[myHashCode] == null) {
 			 return myHashCode;
 		}
@@ -95,11 +104,14 @@ public class HashTableLinearProbe<K, V> {
 	
 	public V find(K key) {
 		tablePointer = null;
-		int myHashCode = getHashValue(key);
+		int myHashCode = getRawHashValue(key);
 		if(myHashCode == -1)
 			return null;
 		for(int i = 0; i < hashtable.length; i++) {
-			if(hashtable[myHashCode].key.equals(key)) {
+			if(hashtable[myHashCode] == null) {
+				break;
+			}
+			else if(hashtable[myHashCode].key.equals(key)) {
 				tablePointer = hashtable[myHashCode];
 				if(!hashtable[myHashCode].deleted)
 					return hashtable[myHashCode].value;
