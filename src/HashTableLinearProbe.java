@@ -26,6 +26,8 @@ public class HashTableLinearProbe<K, V> {
 		createTable(num);
 	}
 	
+	
+	
 	@SuppressWarnings("unchecked")
 	private void createTable(int num) {
 		hashtable = new HashEntry[nextPrime(num)];
@@ -67,11 +69,16 @@ public class HashTableLinearProbe<K, V> {
 		}
 		else if(key instanceof String) {
 			String keystr = (String)key;
-			for(int i = 0; i < keystr.length(); i++) {
-				myHashCode = 37 * myHashCode + keystr.charAt(i);
+			if(keystr == "" || keystr == "\n") { //Return -1 if string in put is blank.
+				return -1;
 			}
-			
-			myHashCode %= hashtable.length;
+			else {
+				for(int i = 0; i < keystr.length(); i++) {
+					myHashCode = 37 * myHashCode + keystr.charAt(i);
+				}
+				
+				myHashCode %= hashtable.length;
+			}
 		}
 		else {
 			return -1;
@@ -141,6 +148,7 @@ public class HashTableLinearProbe<K, V> {
 		if(find(key) != null) 
 			return false;
 		
+		//If insert is a deleted item, switch existing item to active.
 		if(tablePointer != null && tablePointer.deleted) {
 			tablePointer.deleted = false;
 		}
@@ -148,9 +156,8 @@ public class HashTableLinearProbe<K, V> {
 			try {
 				hashtable[getHashValue(key)] = new HashEntry<K, V>(key, value);
 			} catch(ArrayIndexOutOfBoundsException e) {	//Null key will return -1 which throws out of bounds exception.
-				e.toString();
-				//UPDATE TO ACCOUNT FOR ALL ERRORS!!!
-				System.out.println("ErrorDetails: key cannot be null.");
+				System.out.println("Error: key input is invalid.");
+				return false;
 			}
 			
 			size++;	//Increment array size
